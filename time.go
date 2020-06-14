@@ -13,19 +13,19 @@ var (
 )
 
 var (
-	HHMMRegex                = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[.:]%s`, timePrefix, HH, MM))
-	HHRegex                  = regexp.MustCompile(fmt.Sprintf(`%s[" "]%s\s?%s?`, timePrefix, HH, timeSuffix))
-	BaseTimeOrientationRegex = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s`, datePrefix, durationSuffix))
+	hhmmRegex                = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[.:]%s`, timePrefix, hourHH, minuteMM))
+	hhRegex                  = regexp.MustCompile(fmt.Sprintf(`%s[" "]%s\s?%s?`, timePrefix, hourHH, timeSuffix))
+	baseTimeOrientationRegex = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s`, datePrefix, durationSuffix))
 )
 
 func parseTime(s string, opts Opts) (t time.Time, st string) {
 	switch {
-	case HHMMRegex.MatchString(s):
-		return calculateTime(HHMMRegex.FindStringSubmatch(s), opts)
-	case HHRegex.MatchString(s):
-		return calculateTime(HHRegex.FindStringSubmatch(s), opts)
-	case BaseTimeOrientationRegex.MatchString(s):
-		return calculateTime(BaseTimeOrientationRegex.FindStringSubmatch(s), opts)
+	case hhmmRegex.MatchString(s):
+		return calculateTime(hhmmRegex.FindStringSubmatch(s), opts)
+	case hhRegex.MatchString(s):
+		return calculateTime(hhRegex.FindStringSubmatch(s), opts)
+	case baseTimeOrientationRegex.MatchString(s):
+		return calculateTime(baseTimeOrientationRegex.FindStringSubmatch(s), opts)
 	}
 	return opts.Now, st
 }

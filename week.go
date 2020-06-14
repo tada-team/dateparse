@@ -13,7 +13,15 @@ var (
 	thursday  = `четверг|thursday`
 	friday    = `пятницу|пятница|friday`
 	saturday  = `субботу|суббота|saturday`
-	weeks     = strings.Join([]string{sunday, monday, tuesday, wednesday, thursday, friday, saturday}, "|")
+	weeks     = strings.Join([]string{
+		sunday,
+		monday,
+		tuesday,
+		wednesday,
+		thursday,
+		friday,
+		saturday,
+	}, "|")
 )
 
 var (
@@ -24,7 +32,15 @@ var (
 	shortThursday  = `чт|thu`
 	shortFriday    = `пт|fri`
 	shortSaturday  = `сб|sat`
-	ShortWeeks     = strings.Join([]string{shortSunday, shortMonday, shortTuesday, shortWednesday, shortThursday, shortFriday, shortSaturday}, "|")
+	shortWeeks     = strings.Join([]string{
+		shortSunday,
+		shortMonday,
+		shortTuesday,
+		shortWednesday,
+		shortThursday,
+		shortFriday,
+		shortSaturday,
+	}, "|")
 )
 
 func parseWeekDay(s string, opts Opts) time.Time {

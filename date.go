@@ -17,23 +17,23 @@ var (
 	baseDurRegex            = regexp.MustCompile(fmt.Sprintf(`(%s)[" "/]`, duration))
 	baseDurOnlyRegex        = regexp.MustCompile(fmt.Sprintf(`(%s)$`, duration))
 	baseDurTimeRegex        = regexp.MustCompile(fmt.Sprintf(`(\d\d?\d?)[" "](%s)`, durationTime))
-	baseWeekOnlyRegex       = regexp.MustCompile(fmt.Sprintf(`^(%s|%s)$`, weeks, ShortWeeks))
-	baseWeekPrefixOnlyRegex = regexp.MustCompile(fmt.Sprintf(`^%s[" "](%s|%s)$`, datePrefix, weeks, ShortWeeks))
-	baseWeekPrefixRegex     = regexp.MustCompile(fmt.Sprintf(`^%s[" "](%s|%s)[" "]`, datePrefix, weeks, ShortWeeks))
-	baseWeekRegex           = regexp.MustCompile(fmt.Sprintf(`^(%s|%s)[" "]`, weeks, ShortWeeks))
+	baseWeekOnlyRegex       = regexp.MustCompile(fmt.Sprintf(`^(%s|%s)$`, weeks, shortWeeks))
+	baseWeekPrefixOnlyRegex = regexp.MustCompile(fmt.Sprintf(`^%s[" "](%s|%s)$`, datePrefix, weeks, shortWeeks))
+	baseWeekPrefixRegex     = regexp.MustCompile(fmt.Sprintf(`^%s[" "](%s|%s)[" "]`, datePrefix, weeks, shortWeeks))
+	baseWeekRegex           = regexp.MustCompile(fmt.Sprintf(`^(%s|%s)[" "]`, weeks, shortWeeks))
 	weekDurSuffixRegex      = regexp.MustCompile(fmt.Sprintf(`%s[" "](%s)[" "]%s`, datePrefix, weeks, durationSuffix))
 	durSuffixWeekRegex      = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[" "]%s[" "](%s)`, datePrefix, durationSuffix, datePrefix, weeks))
 	durPrefixWeekRegex      = regexp.MustCompile(fmt.Sprintf(`%s[" "]%s[" "](%s)[" "]?%s?`, datePrefix, durPrefix, weeks, durationSuffix))
 )
 
 var (
-	ddRegex          = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[" "]?%s`, datePrefix, dd, daySuffix))
-	ddmmRegex        = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[/.]%s\s?%s?`, datePrefix, dd, mm, dateSuffix))
-	ddMonthRegex     = regexp.MustCompile(fmt.Sprintf(`%s%s?[" "](%s)`, dd, dateSuffix, months))
-	ddmmyyyyRegex    = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[/.]%s[/.]%s\s?%s?`, datePrefix, dd, mm, yyyy, dateSuffix))
-	ddMonthyyyyRegex = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[" "/.](%s)[" "/.]%s\s?%s?`, datePrefix, dd, months, yyyy, dateSuffix))
-	ddmmyyRegex      = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[/.]%s[/.]%s\s?%s?`, datePrefix, dd, mm, yy, dateSuffix))
-	ddMonthyyRegex   = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[" "/.](%s)[" "/.]%s\s?%s`, datePrefix, dd, months, yy, dateSuffix))
+	ddRegex          = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[" "]?%s`, datePrefix, dayDD, daySuffix))
+	ddmmRegex        = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[/.]%s\s?%s?`, datePrefix, dayDD, monthMM, dateSuffix))
+	ddMonthRegex     = regexp.MustCompile(fmt.Sprintf(`%s%s?[" "](%s)`, dayDD, dateSuffix, months))
+	ddmmyyyyRegex    = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[/.]%s[/.]%s\s?%s?`, datePrefix, dayDD, monthMM, yearYYYY, dateSuffix))
+	ddMonthyyyyRegex = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[" "/.](%s)[" "/.]%s\s?%s?`, datePrefix, dayDD, months, yearYYYY, dateSuffix))
+	ddmmyyRegex      = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[/.]%s[/.]%s\s?%s?`, datePrefix, dayDD, monthMM, yearYY, dateSuffix))
+	ddMonthyyRegex   = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[" "/.](%s)[" "/.]%s\s?%s`, datePrefix, dayDD, months, yearYY, dateSuffix))
 )
 
 var (
@@ -44,9 +44,9 @@ var (
 )
 
 var (
-	mmddyyyyRegex = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[/.]%s[/.]%s\s?%s?`, datePrefix, mm, dd, yyyy, dateSuffix))
-	mmddyyRegex   = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[/.]%s[/.]%s\s?%s?`, datePrefix, mm, dd, yy, dateSuffix))
-	mmddRegex     = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[/.]%s\s?%s?`, datePrefix, mm, dd, dateSuffix))
+	mmddyyyyRegex = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[/.]%s[/.]%s\s?%s?`, datePrefix, monthMM, dayDD, yearYYYY, dateSuffix))
+	mmddyyRegex   = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[/.]%s[/.]%s\s?%s?`, datePrefix, monthMM, dayDD, yearYY, dateSuffix))
+	mmddRegex     = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[/.]%s\s?%s?`, datePrefix, monthMM, dayDD, dateSuffix))
 )
 
 func parseDate(s string, opts Opts) (t time.Time, st string) {
