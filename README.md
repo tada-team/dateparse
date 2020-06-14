@@ -7,11 +7,27 @@
 ```go
 package main 
 
-import "github.com/tada-team/dateparse"
+import (
+    "time"
+    "github.com/tada-team/dateparse"
+)
 
 func main() {
     date, message := dateparse.Parse("в следующий понедельник утром посмотреть код", nil)
+    if date.IsZero() {
+        panic("invalid date")
+    }
     print("at:", date)
     print("do:", message)
+
+    loc, err := time.LoadLocation("Europe/Moscow")
+    if err != nil {
+        panic(err)
+    } 
+    date, _ = dateparse.Parse("завтра", &dateparse.Opts{
+        TodayEndHour: 20,
+        Now:          time.Now().In(loc),
+    })
+    print(date)
 }
 ```
