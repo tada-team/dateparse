@@ -10,10 +10,13 @@ type Opts struct {
 	Now          time.Time
 }
 
-func Parse(s string, opts Opts) (time.Time, string) {
+func Parse(s string, opts *Opts) (time.Time, string) {
+	if opts == nil {
+		opts = &Opts{}
+	}
 	if opts.TodayEndHour == 0 {
 		opts.TodayEndHour = 18
 	}
-	date, msg := dateTimeParse(strings.TrimSpace(strings.ToLower(s)), opts)
+	date, msg := dateTimeParse(strings.TrimSpace(strings.ToLower(s)), *opts)
 	return date.Round(time.Second), msg
 }

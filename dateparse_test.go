@@ -543,7 +543,7 @@ func TestDateparse(t *testing.T) {
 		//	"",
 		//},
 	} {
-		got, msg := Parse(k, Opts{Now: dt})
+		got, msg := Parse(k, &Opts{Now: dt})
 		if got.IsZero() || !got.Equal(want.date) || msg != want.message {
 			t.Errorf("dateparse error on '%s': got '%s' (comment: '%s') want '%s' (comment: '%s')", k, got, msg, want.date, want.message)
 			continue
