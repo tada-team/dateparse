@@ -34,6 +34,10 @@ var (
 	ddMonthyyyyRegex = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[" "/.](%s)[" "/.]%s\s?%s?`, datePrefix, dayDD, months, yearYYYY, dateSuffix))
 	ddmmyyRegex      = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[/.]%s[/.]%s\s?%s?`, datePrefix, dayDD, monthMM, yearYY, dateSuffix))
 	ddMonthyyRegex   = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[" "/.](%s)[" "/.]%s\s?%s`, datePrefix, dayDD, months, yearYY, dateSuffix))
+	isoyyyymmddRegex = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[/.-]%s[/.-]%s\s?`, datePrefix, yearYYYY, monthMM, dayDD))
+	isoyymmddRegex   = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[/.-]%s[/.-]%s`, datePrefix, yearYY, monthMM, dayDD))
+	rareyyyymmdd     = regexp.MustCompile(fmt.Sprintf(`%s?\s?%s%s%s`, datePrefix, yearYYYY, monthMM, dayDD))
+	rareyymmdd       = regexp.MustCompile(fmt.Sprintf(`%s?\s?%s%s%s`, datePrefix, yearYY, monthMM, dayDD))
 )
 
 var (
@@ -75,24 +79,32 @@ func parseDate(s string, opts Opts) (t time.Time, st string) {
 		return calculateWeekDuration(durPrefixWeekRegex.FindStringSubmatch(s), opts, 3)
 	case durSuffixWeekRegex.MatchString(s):
 		return calculateWeekDuration(durSuffixWeekRegex.FindStringSubmatch(s), opts, -3)
+	case rareyyyymmdd.MatchString(s):
+		return calculateFullDate(rareyyyymmdd.FindStringSubmatch(s), opts, 2, 3, 4)
+	case rareyymmdd.MatchString(s):
+		return calculateFullDate(rareyymmdd.FindStringSubmatch(s), opts, 2, 3, 4)
 	case ddMonthyyyyRegex.MatchString(s):
-		return calculateFullDate(ddMonthyyyyRegex.FindStringSubmatch(s), opts, 2)
+		return calculateFullDate(ddMonthyyyyRegex.FindStringSubmatch(s), opts, 4, 3, 2)
 	case ddMonthyyRegex.MatchString(s):
-		return calculateFullDate(ddMonthyyRegex.FindStringSubmatch(s), opts, 2)
+		return calculateFullDate(ddMonthyyRegex.FindStringSubmatch(s), opts, 4, 3, 2)
 	case ddmmyyyyRegex.MatchString(s):
-		return calculateFullDate(ddmmyyyyRegex.FindStringSubmatch(s), opts, 2)
+		return calculateFullDate(ddmmyyyyRegex.FindStringSubmatch(s), opts, 4, 3, 2)
 	case mmddyyyyRegex.MatchString(s):
-		return calculateFullDate(mmddyyyyRegex.FindStringSubmatch(s), opts, 1)
+		return calculateFullDate(mmddyyyyRegex.FindStringSubmatch(s), opts, 4, 2, 3)
 	case ddmmyyRegex.MatchString(s):
-		return calculateFullDate(ddmmyyRegex.FindStringSubmatch(s), opts, 2)
+		return calculateFullDate(ddmmyyRegex.FindStringSubmatch(s), opts, 4, 3, 2)
 	case mmddyyRegex.MatchString(s):
-		return calculateFullDate(mmddyyRegex.FindStringSubmatch(s), opts, 1)
+		return calculateFullDate(mmddyyRegex.FindStringSubmatch(s), opts, 4, 2, 3)
+	case isoyyyymmddRegex.MatchString(s):
+		return calculateFullDate(isoyyyymmddRegex.FindStringSubmatch(s), opts, 2, 3, 4)
+	case isoyymmddRegex.MatchString(s):
+		return calculateFullDate(isoyymmddRegex.FindStringSubmatch(s), opts, 2, 3, 4)
 	case ddMonthRegex.MatchString(s):
-		return calculateDate(ddMonthRegex.FindStringSubmatch(s), opts, 2)
+		return calculateDate(ddMonthRegex.FindStringSubmatch(s), opts, 3, 1)
 	case ddmmRegex.MatchString(s):
-		return calculateDate(ddmmRegex.FindStringSubmatch(s), opts, 2)
+		return calculateDate(ddmmRegex.FindStringSubmatch(s), opts, 3, 2)
 	case mmddRegex.MatchString(s):
-		return calculateDate(mmddRegex.FindStringSubmatch(s), opts, 1)
+		return calculateDate(mmddRegex.FindStringSubmatch(s), opts, 2, 3)
 	case baseDurTimeRegex.MatchString(s):
 		return calculateDuration(baseDurTimeRegex.FindStringSubmatch(s), opts, 1)
 	case wdsRegex.MatchString(s):
@@ -109,14 +121,10 @@ func getDate(year int, month int, day int, hour int, minute int, second int, opt
 	return time.Date(year, time.Month(month), day, hour, minute, second, 0, opts.Now.Location())
 }
 
-func calculateDate(m []string, opts Opts, monthPosition int) (time.Time, string) {
-	m = forceList(strings.Join(m, ","))
-	dayPosition := 1
+func calculateDate(m []string, opts Opts, monthPosition int, dayPosition int) (time.Time, string) {
 	month := opts.Now.Month()
 	year := opts.Now.Year()
-	if monthPosition < 2 {
-		dayPosition += 1
-	}
+
 	day := forceInt(m[dayPosition])
 	if mth := parseMonth(m[monthPosition]); mth != 0 {
 		month = time.Month(mth)
@@ -129,14 +137,14 @@ func calculateDate(m []string, opts Opts, monthPosition int) (time.Time, string)
 	return getDate(year, int(month), day, opts.TodayEndHour, 0, 0, opts), m[0]
 }
 
-func calculateFullDate(m []string, opts Opts, monthPosition int) (time.Time, string) {
+func calculateFullDate(m []string, opts Opts, yearPosition int, monthPosition int, dayPosition int) (time.Time, string) {
 	year := opts.Now.Year()
-	if len(m[4]) == 2 {
-		year = forceInt("20" + m[4][:2])
+	if len(m[yearPosition]) == 2 {
+		year = forceInt("20" + m[yearPosition][:2])
 	} else {
-		year = forceInt(m[4][:4])
+		year = forceInt(m[yearPosition][:4])
 	}
-	date, _ := calculateDate(m, opts, monthPosition)
+	date, _ := calculateDate(m, opts, monthPosition, dayPosition)
 	if date.Month() < opts.Now.Month() && year == opts.Now.Year() {
 		year += 1
 	}
