@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/tada-team/dateparse.png)](https://travis-ci.org/tada-team/dateparse)
+[![Build Status](https://travis-ci.org/github/tada-team/dateparse.png)](https://travis-ci.org/github/tada-team/dateparse)
 
 # dateparse
 
