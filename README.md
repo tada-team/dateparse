@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/tada-team/dateparse.png)](https://travis-ci.org/tada-team/dateparse)
+
 # dateparse
 
 Лёгкий способ превратить пользовательский ввод даты во что-то машинопонятное.
