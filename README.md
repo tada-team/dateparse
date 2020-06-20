@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.org/tada-team/dateparse.svg?branch=master)](https://travis-ci.org/tada-team/dateparse)
-
+[![Build Status](https://travis-ci.org/tada-team/dateparse.svg?branch=master)](https://travis-ci.org/tada-team/dateparse) [![codecov](https://codecov.io/gh/tada-team/dateparse/branch/master/graph/badge.svg)](https://codecov.io/gh/tada-team/dateparse)
 # dateparse
 
 Лёгкий способ превратить пользовательский ввод даты во что-то машинопонятное.
