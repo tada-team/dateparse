@@ -34,10 +34,8 @@ var (
 	ddMonthyyyyRegex = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[" "/.](%s)[" "/.]%s\s?%s?`, datePrefix, dayDD, months, yearYYYY, dateSuffix))
 	ddmmyyRegex      = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[/.]%s[/.]%s\s?%s?`, datePrefix, dayDD, monthMM, yearYY, dateSuffix))
 	ddMonthyyRegex   = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[" "/.](%s)[" "/.]%s\s?%s`, datePrefix, dayDD, months, yearYY, dateSuffix))
-	isoyyyymmddRegex = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[/.-]%s[/.-]%s\s?`, datePrefix, yearYYYY, monthMM, dayDD))
-	isoyymmddRegex   = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[/.-]%s[/.-]%s`, datePrefix, yearYY, monthMM, dayDD))
-	rareyyyymmdd     = regexp.MustCompile(fmt.Sprintf(`%s?\s?%s%s%s`, datePrefix, yearYYYY, monthMM, dayDD))
-	rareyymmdd       = regexp.MustCompile(fmt.Sprintf(`%s?\s?%s%s%s`, datePrefix, yearYY, monthMM, dayDD))
+	isoyyyymmddRegex = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[/.-]?%s[/.-]?%s\s?`, datePrefix, yearYYYY, monthMM, dayDD))
+	isoyymmddRegex   = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[/.-]?%s[/.-]?%s`, datePrefix, yearYY, monthMM, dayDD))
 )
 
 var (
@@ -79,10 +77,10 @@ func parseDate(s string, opts Opts) (t time.Time, st string) {
 		return calculateWeekDuration(durPrefixWeekRegex.FindStringSubmatch(s), opts, 3)
 	case durSuffixWeekRegex.MatchString(s):
 		return calculateWeekDuration(durSuffixWeekRegex.FindStringSubmatch(s), opts, -3)
-	case rareyyyymmdd.MatchString(s):
-		return calculateFullDate(rareyyyymmdd.FindStringSubmatch(s), opts, 2, 3, 4)
-	case rareyymmdd.MatchString(s):
-		return calculateFullDate(rareyymmdd.FindStringSubmatch(s), opts, 2, 3, 4)
+	//case rareyyyymmdd.MatchString(s):
+	//	return calculateFullDate(rareyyyymmdd.FindStringSubmatch(s), opts, 2, 3, 4)
+	//case rareyymmdd.MatchString(s):
+	//	return calculateFullDate(rareyymmdd.FindStringSubmatch(s), opts, 2, 3, 4)
 	case ddMonthyyyyRegex.MatchString(s):
 		return calculateFullDate(ddMonthyyyyRegex.FindStringSubmatch(s), opts, 4, 3, 2)
 	case ddMonthyyRegex.MatchString(s):
