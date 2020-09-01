@@ -43,6 +43,7 @@ var (
 	durRegex       = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[" "](%s)`, datePrefix, durPrefix, durationWds))
 	wdsRegex       = regexp.MustCompile(fmt.Sprintf(`(%s)\b[" "/]?%s?`, durationWds, durationSuffix))
 	wdsSuffuxRegex = regexp.MustCompile(fmt.Sprintf(`(%s)[" "/]%s[" "]%s`, durationWds, datePrefix, durationSuffix))
+	wdsTimeRegex   = regexp.MustCompile(fmt.Sprintf(`%s[" "](\d\d)[" "](%s)`, datePrefix, hours))
 )
 
 var (
@@ -103,6 +104,13 @@ func parseDate(s string, opts Opts) (t time.Time, st string) {
 		return calculateDate(ddmmRegex.FindStringSubmatch(s), opts, 3, 2)
 	case mmddRegex.MatchString(s):
 		return calculateDate(mmddRegex.FindStringSubmatch(s), opts, 2, 3)
+	case wdsTimeRegex.MatchString(s):
+		m := wdsTimeRegex.FindStringSubmatch(s)
+		date := getDate(opts.Now.Year(), int(opts.Now.Month()), opts.Now.Day(), forceInt(m[2]), 0, 0, opts)
+		if date.Before(opts.Now) {
+			date = date.Add(24 * time.Hour)
+		}
+		return date, m[0]
 	case baseDurTimeRegex.MatchString(s):
 		return calculateDuration(baseDurTimeRegex.FindStringSubmatch(s), opts, 1)
 	case wdsRegex.MatchString(s):

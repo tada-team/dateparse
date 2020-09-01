@@ -21,6 +21,22 @@ func TestDateparse(t *testing.T) {
 			dt.Add(1 * time.Hour),
 			"тест",
 		},
+		"в 15 часов": {
+			time.Date(dt.Year(), dt.Month(), dt.Day(), 15, 0, 0, 0, dt.Location()),
+			"",
+		},
+		"в 11 часов": {
+			time.Date(dt.Year(), dt.Month(), dt.Day()+1, 11, 0, 0, 0, dt.Location()),
+			"",
+		},
+		"at 11 hours": {
+			time.Date(dt.Year(), dt.Month(), dt.Day()+1, 11, 0, 0, 0, dt.Location()),
+			"",
+		},
+		"в 11 комментарий": {
+			time.Date(dt.Year(), dt.Month(), dt.Day()+1, 11, 0, 0, 0, dt.Location()),
+			"комментарий",
+		},
 		"сегодня/13:00 почитать": {
 			time.Date(dt.Year(), dt.Month(), dt.Day(), 13, 0, 0, 0, dt.Location()),
 			"почитать",

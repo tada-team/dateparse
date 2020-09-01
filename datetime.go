@@ -9,7 +9,7 @@ import (
 var dateTimeRegex, _ = joinRegexp([]*regexp.Regexp{baseDurOnlyRegex, baseWeekOnlyRegex, baseWeekPrefixRegex, baseWeekPrefixOnlyRegex,
 	baseDurRegex, baseWeekRegex, baseTimeOrientationRegex, durTimeRegex, baseDurTimeRegex, durRegex, wdsSuffuxRegex, wdsRegex,
 	ddRegex, ddmmRegex, ddMonthRegex, ddmmyyyyRegex, mmddyyyyRegex, mmddRegex, ddMonthyyyyRegex, ddmmyyRegex, mmddyyRegex,
-	ddMonthyyRegex, durPrefixWeekRegex, weekDurSuffixRegex, durSuffixWeekRegex, hhmmRegex, hhRegex, isoyyyymmddRegex, isoyymmddRegex}, "|")
+	ddMonthyyRegex, durPrefixWeekRegex, weekDurSuffixRegex, durSuffixWeekRegex, hhmmRegex, hhRegex, isoyyyymmddRegex, isoyymmddRegex, wdsTimeRegex}, "|")
 
 func dateTimeParse(s string, opts Opts) (t time.Time, msg string) {
 	if dateTimeRegex.MatchString(s) {
