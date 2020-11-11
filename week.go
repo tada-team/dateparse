@@ -84,7 +84,7 @@ func calculateWeekDuration(m []string, opts Opts, weekPosition int) (time.Time, 
 	}
 	date := parseWeekDay(m[weekPosition], opts)
 	switch {
-	case strings.Contains(durPrefix, m[weekPosition-1]) && date.Weekday() != opts.Now.Weekday():
+	case strings.Contains(durPrefix, m[weekPosition-1]):
 		date = date.Add(24 * 7 * time.Hour)
 	}
 	if len(m) > 3 {

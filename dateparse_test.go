@@ -15,7 +15,7 @@ func TestDateparse(t *testing.T) {
 	if err != nil {
 		t.Fatal("load location fail:", err)
 	}
-	dt := time.Date(2020, 10, 10, 12, 1, 0, 0, loc)
+	dt := time.Date(2020, 10, 10, 12, 1, 0, 0, loc) // saturday
 	for k, want := range map[string]parserStruct{
 		"через час тест": {
 			dt.Add(1 * time.Hour),
@@ -569,7 +569,27 @@ func TestDateparse(t *testing.T) {
 			dt.Add(7 * 24 * time.Hour),
 			"выходной",
 		},
+		"через два часа": {
+			dt.Add(2 * time.Hour),
+			"",
+		},
+		"через три дня сходить в кино": {
+			dt.Add(3 * 24 * time.Hour),
+			"сходить в кино",
+		},
+		"в следующую субботу": {
+			time.Date(dt.Year(), dt.Month(), dt.Day()+7, 18, 0, 0, 0, dt.Location()),
+			"",
+		},
+		"в следующую субботу праздник": {
+			time.Date(dt.Year(), dt.Month(), dt.Day()+7, 18, 0, 0, 0, dt.Location()),
+			"праздник",
+		},
 		// FIXME:
+		//"в субботу в 11 утра": {
+		//	time.Date(dt.Year(), dt.Month(), dt.Day()+7, 11, 0, 0, 0, dt.Location()),
+		//	"",
+		//},
 		//"12 13": {
 		//	time.Date(dt.Year(), dt.Month(), dt.Day(), 12, 13, 0, 0, dt.Location()),
 		//	"",

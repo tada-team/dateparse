@@ -40,7 +40,7 @@ var (
 
 var (
 	durTimeRegex   = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[" "](\d\d?\d?)[" "]?(%s)?`, datePrefix, durPrefix, durationTime))
-	durRegex       = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[" "](%s)`, datePrefix, durPrefix, durationWds))
+	durRegex       = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[" "](%s)?\s?(%s)`, datePrefix, durPrefix, wordNumbers, durationWds))
 	wdsRegex       = regexp.MustCompile(fmt.Sprintf(`(%s)\b[" "/]?%s?`, durationWds, durationSuffix))
 	wdsSuffuxRegex = regexp.MustCompile(fmt.Sprintf(`(%s)[" "/]%s[" "]%s`, durationWds, datePrefix, durationSuffix))
 	wdsTimeRegex   = regexp.MustCompile(fmt.Sprintf(`%s[" "](\d\d)[" "](%s)`, datePrefix, hours))

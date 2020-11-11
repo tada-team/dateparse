@@ -17,12 +17,55 @@ var (
 )
 
 var (
-	durPrefix      = `(через|in|следующ[и]?[й]?[у]?[ю]?|следующий|next)`
+	durPrefix      = `(через|in|следующ[и]?[й]?[у]?[ю]?|следующий|следующую|next)`
 	duration       = strings.Join([]string{today, tomorrow, afterTomorrow, afterAfterTomorrow, yesterday}, "|")
 	durationTime   = `сек[у]?[н]?[д]?[а]?[у]?|мин[у]?[т]?[у]?[а]?[ы]?|min[u]?[t]?[e]?[s]?|час[о]?[в]?[а]?|hour[s]?|дн[е]?[й]?[я]?|day[s]?|недел[ь]?[я]?[и]?[ю]?|week[s]?|год|year[s]?|месяц[а]?[е]?[в]?|month[s]?`
 	durationWds    = strings.Join([]string{duration, durationTime}, "|")
 	durationSuffix = `(утр[а]?[о]?[м]?|morning|вечер[а]?[о]?[м]?|evening|\\|/|днем|полдень|полночь|midday|noon|midnight|ночью)`
 )
+
+var (
+	one         = `one|один`
+	two         = `two|два`
+	three       = `three|три`
+	four        = `four|четыре`
+	five        = `five|пять`
+	six         = `six|шесть`
+	seven       = `seven|семь`
+	eight       = `eight|восемь`
+	nine        = `nine|девять`
+	ten         = `ten|десять`
+	wordNumbers = strings.Join([]string{one, two, three, four, five, six, seven, eight, nine, ten}, "|")
+)
+
+func checkWordNumber(s string) int64 {
+	if v := forceInt64(s); v != 0 {
+		return v
+	}
+	switch {
+	case strings.Contains(one, s):
+		return 1
+	case strings.Contains(two, s):
+		return 2
+	case strings.Contains(three, s):
+		return 3
+	case strings.Contains(four, s):
+		return 4
+	case strings.Contains(five, s):
+		return 5
+	case strings.Contains(six, s):
+		return 6
+	case strings.Contains(seven, s):
+		return 7
+	case strings.Contains(eight, s):
+		return 8
+	case strings.Contains(nine, s):
+		return 9
+	case strings.Contains(ten, s):
+		return 10
+	}
+	return 0
+}
 
 func calculateDuration(m []string, opts Opts, k int) (time.Time, string) {
 	dur := durationParse(m[k:], opts)
@@ -48,7 +91,7 @@ func durationParse(bits []string, opts Opts) (dur time.Duration) {
 			return durationParse([]string{word, "минут"}, opts)
 		}
 	case 2:
-		v := forceInt64(bits[0])
+		v := checkWordNumber(bits[0])
 		if v == 0 {
 			return
 		}
