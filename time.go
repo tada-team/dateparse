@@ -8,14 +8,14 @@ import (
 )
 
 var (
-	timePrefix = `(в|к|by|at)`
+	timePrefix = `(с|в|к|by|at)`
 	timeSuffix = `(утра|вечера|мин[у]?[т]?|a[.]?m|p[.]?m)`
 )
 
 var (
 	hhmmRegex                = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s[.:]%s`, timePrefix, hourHH, minuteMM))
 	hhRegex                  = regexp.MustCompile(fmt.Sprintf(`%s[" "]%s\s?%s?`, timePrefix, hourHH, timeSuffix))
-	baseTimeOrientationRegex = regexp.MustCompile(fmt.Sprintf(`%s?[" "]?%s`, datePrefix, durationSuffix))
+	baseTimeOrientationRegex = regexp.MustCompile(fmt.Sprintf(`%s?%s?[" "]?%s`, timePrefix, datePrefix, durationSuffix))
 )
 
 func parseTime(s string, opts Opts) (t time.Time, st string) {
@@ -55,6 +55,8 @@ func calculateTime(t []string, opts Opts) (time.Time, string) {
 		return getDate(opts.Now.Year(), int(opts.Now.Month()), opts.Now.Day(), hour, minute, 0, opts), t[0]
 	case 2:
 		switch {
+		case strings.Contains(morning, m[1]):
+			return getDate(opts.Now.Year(), int(opts.Now.Month()), opts.Now.Day(), 10, 0, 0, opts), t[0]
 		case strings.Contains(noon, m[1]):
 			return getDate(opts.Now.Year(), int(opts.Now.Month()), opts.Now.Day(), 12, 0, 0, opts), t[0]
 		case strings.Contains(timePrefix, m[0]):
