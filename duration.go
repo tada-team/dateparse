@@ -77,7 +77,7 @@ func calculateDuration(m []string, opts Opts, k int) (time.Time, string) {
 
 func durationParse(bits []string, opts Opts) (dur time.Duration) {
 	if strings.Contains(durPrefix, bits[0]) {
-		return durationParse(forceList(strings.Join(bits[1:], ",")), opts)
+		return durationParse(normalizeStrings(bits[1:]), opts)
 	}
 
 	switch len(bits) {

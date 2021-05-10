@@ -44,7 +44,7 @@ var (
 )
 
 func parseWeekDay(s string, opts Opts) time.Time {
-	date := getDate(opts.Now.Year(), int(opts.Now.Month()), opts.Now.Day(), opts.TodayEndHour, 0, 0, opts)
+	date := getDate(opts.Now.Year(), opts.Now.Month(), opts.Now.Day(), opts.TodayEndHour, 0, 0, opts)
 	if weakDay := parseWeekDays(s); weakDay < 7 {
 		v := weakDay - int(date.Weekday())
 		if v < 0 {
@@ -93,13 +93,13 @@ func calculateWeekDuration(m []string, opts Opts, weekPosition int) (time.Time, 
 			if date.Weekday() == opts.Now.Weekday() && opts.Now.Hour() > 10 {
 				date = date.Add(24 * 7 * time.Hour)
 			}
-			return getDate(date.Year(), int(date.Month()), date.Day(), 10, 0, 0, opts), m[0]
+			return getDate(date.Year(), date.Month(), date.Day(), 10, 0, 0, opts), m[0]
 		case strings.Contains(evening, m[timePosition]) && m[timePosition] != "":
 			return date, m[0]
 		case strings.Contains(noon, m[timePosition]) && m[timePosition] != "":
-			return getDate(date.Year(), int(date.Month()), date.Day(), 12, 0, 0, opts), m[0]
+			return getDate(date.Year(), date.Month(), date.Day(), 12, 0, 0, opts), m[0]
 		case strings.Contains(midnight, m[timePosition]) && m[timePosition] != "":
-			return getDate(date.Year(), int(date.Month()), date.Day(), 0, 0, 0, opts), m[0]
+			return getDate(date.Year(), date.Month(), date.Day(), 0, 0, 0, opts), m[0]
 		}
 	}
 	if date.Before(opts.Now) {

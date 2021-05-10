@@ -630,3 +630,13 @@ func TestDateparse(t *testing.T) {
 		}
 	}
 }
+
+// BenchmarkParse-12    	   15781	     76097 ns/op	     494 B/op	      14 allocs/op
+// ==>
+// BenchmarkParse-12    	   16088	     75671 ns/op	     439 B/op	       8 allocs/op
+func BenchmarkParse(b *testing.B ) {
+	b.ReportAllocs()
+	for i := 0; i < b.N; i++ {
+		Parse("сегодня в 18", nil)
+	}
+}

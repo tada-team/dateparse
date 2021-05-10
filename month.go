@@ -1,6 +1,9 @@
 package dateparse
 
-import "strings"
+import (
+	"strings"
+	"time"
+)
 
 var (
 	january   = `января|янв|january|jan`
@@ -18,7 +21,7 @@ var (
 	months    = strings.Join([]string{january, february, march, april, may, june, july, august, september, october, november, december}, "|")
 )
 
-func parseMonth(monthStr string) int {
+func parseMonth(monthStr string) time.Month {
 	switch {
 	case strings.Contains(january, monthStr):
 		return 1

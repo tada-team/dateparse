@@ -106,7 +106,7 @@ func parseDate(s string, opts Opts) (t time.Time, st string) {
 		return calculateDate(mmddRegex.FindStringSubmatch(s), opts, 2, 3)
 	case wdsTimeRegex.MatchString(s):
 		m := wdsTimeRegex.FindStringSubmatch(s)
-		date := getDate(opts.Now.Year(), int(opts.Now.Month()), opts.Now.Day(), forceInt(m[2]), 0, 0, opts)
+		date := getDate(opts.Now.Year(), opts.Now.Month(), opts.Now.Day(), forceInt(m[2]), 0, 0, opts)
 		if date.Before(opts.Now) {
 			date = date.Add(24 * time.Hour)
 		}
@@ -118,29 +118,30 @@ func parseDate(s string, opts Opts) (t time.Time, st string) {
 	case ddRegex.MatchString(s):
 		m := ddRegex.FindStringSubmatch(s)
 		day := forceInt(m[2])
-		return getDate(opts.Now.Year(), int(opts.Now.Month()), day, opts.TodayEndHour, 0, 0, opts), m[0]
+		return getDate(opts.Now.Year(), opts.Now.Month(), day, opts.TodayEndHour, 0, 0, opts), m[0]
 	}
 	return opts.Now, st
 }
 
-func getDate(year int, month int, day int, hour int, minute int, second int, opts Opts) time.Time {
-	return time.Date(year, time.Month(month), day, hour, minute, second, 0, opts.Now.Location())
+func getDate(year int, month time.Month, day int, hour int, minute int, second int, opts Opts) time.Time {
+	return time.Date(year, month, day, hour, minute, second, 0, opts.Now.Location())
 }
 
 func calculateDate(m []string, opts Opts, monthPosition int, dayPosition int) (time.Time, string) {
 	month := opts.Now.Month()
-	year := opts.Now.Year()
-
-	day := forceInt(m[dayPosition])
 	if mth := parseMonth(m[monthPosition]); mth != 0 {
-		month = time.Month(mth)
+		month = mth
 	} else {
 		month = time.Month(forceInt(m[monthPosition]))
 	}
+
+	year := opts.Now.Year()
 	if month < opts.Now.Month() {
-		year += 1
+		year++
 	}
-	return getDate(year, int(month), day, opts.TodayEndHour, 0, 0, opts), m[0]
+
+	day := forceInt(m[dayPosition])
+	return getDate(year, month, day, opts.TodayEndHour, 0, 0, opts), m[0]
 }
 
 func calculateFullDate(m []string, opts Opts, yearPosition int, monthPosition int, dayPosition int) (time.Time, string) {
@@ -154,49 +155,49 @@ func calculateFullDate(m []string, opts Opts, yearPosition int, monthPosition in
 	if date.Month() < opts.Now.Month() && year == opts.Now.Year() {
 		year += 1
 	}
-	return getDate(year, int(date.Month()), date.Day(), opts.TodayEndHour, 0, 0, opts), m[0]
+	return getDate(year, date.Month(), date.Day(), opts.TodayEndHour, 0, 0, opts), m[0]
 }
 
 func calculateWordsDate(m []string, opts Opts) (time.Time, string) {
-	m = forceList(strings.Join(m, ","))
-	date := getDate(opts.Now.Year(), int(opts.Now.Month()), opts.Now.Day(), opts.Now.Hour(), opts.Now.Minute(), 0, opts)
+	m = normalizeStrings(m)
+	date := getDate(opts.Now.Year(), opts.Now.Month(), opts.Now.Day(), opts.Now.Hour(), opts.Now.Minute(), 0, opts)
 	str := strings.Replace(m[0], "/", "", 1)
 	switch {
 	case strings.Contains(today, str) || strings.Contains(today, m[1]):
-		date = getDate(opts.Now.Year(), int(opts.Now.Month()), opts.Now.Day(), opts.TodayEndHour, 0, 0, opts)
+		date = getDate(opts.Now.Year(), opts.Now.Month(), opts.Now.Day(), opts.TodayEndHour, 0, 0, opts)
 	case strings.Contains(tomorrow, str) || strings.Contains(tomorrow, m[1]):
-		date = getDate(opts.Now.Year(), int(opts.Now.Month()), opts.Now.Day()+1, opts.TodayEndHour, 0, 0, opts)
+		date = getDate(opts.Now.Year(), opts.Now.Month(), opts.Now.Day()+1, opts.TodayEndHour, 0, 0, opts)
 	case strings.Contains(afterTomorrow, m[0]):
-		date = getDate(opts.Now.Year(), int(opts.Now.Month()), opts.Now.Day()+2, opts.TodayEndHour, 0, 0, opts)
+		date = getDate(opts.Now.Year(), opts.Now.Month(), opts.Now.Day()+2, opts.TodayEndHour, 0, 0, opts)
 	case strings.Contains(afterAfterTomorrow, m[0]):
-		date = getDate(opts.Now.Year(), int(opts.Now.Month()), opts.Now.Day()+3, opts.TodayEndHour, 0, 0, opts)
+		date = getDate(opts.Now.Year(), opts.Now.Month(), opts.Now.Day()+3, opts.TodayEndHour, 0, 0, opts)
 	case strings.Contains(yesterday, m[0]):
-		date = getDate(opts.Now.Year(), int(opts.Now.Month()), opts.Now.Day()+365, opts.TodayEndHour, 0, 0, opts)
+		date = getDate(opts.Now.Year(), opts.Now.Month(), opts.Now.Day()+365, opts.TodayEndHour, 0, 0, opts)
 	}
 	if len(m) > 2 {
 		switch {
 		case strings.Contains(morning, m[2]):
-			date = getDate(date.Year(), int(date.Month()), date.Day(), 10, 0, 0, opts)
+			date = getDate(date.Year(), date.Month(), date.Day(), 10, 0, 0, opts)
 		case strings.Contains(noon, m[2]):
-			date = getDate(date.Year(), int(date.Month()), date.Day(), 12, 0, 0, opts)
+			date = getDate(date.Year(), date.Month(), date.Day(), 12, 0, 0, opts)
 		case strings.Contains(evening, m[2]):
-			date = getDate(date.Year(), int(date.Month()), date.Day(), 18, 0, 0, opts)
+			date = getDate(date.Year(), date.Month(), date.Day(), 18, 0, 0, opts)
 		case strings.Contains(midnight, m[2]):
 			if date.Day() == opts.Now.Day() {
 				date = date.Add(24 * time.Hour)
 			}
-			date = getDate(date.Year(), int(date.Month()), date.Day(), 0, 0, 0, opts)
+			date = getDate(date.Year(), date.Month(), date.Day(), 0, 0, 0, opts)
 		}
 	}
 	if len(m) > 3 {
 		switch {
 		case strings.Contains(noon, m[3]):
-			date = getDate(date.Year(), int(date.Month()), date.Day(), 12, 0, 0, opts)
+			date = getDate(date.Year(), date.Month(), date.Day(), 12, 0, 0, opts)
 		case strings.Contains(midnight, m[3]):
 			if date.Day() == opts.Now.Day() {
 				date = date.Add(24 * time.Hour)
 			}
-			date = getDate(date.Year(), int(date.Month()), date.Day(), 0, 0, 0, opts)
+			date = getDate(date.Year(), date.Month(), date.Day(), 0, 0, 0, opts)
 		}
 	}
 

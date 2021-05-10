@@ -20,9 +20,12 @@ func forceInt64(s string) int64 {
 	return val
 }
 
-func forceList(s string) []string {
-	res := make([]string, 0)
-	for _, bit := range strings.Split(s, ",") {
+func normalizeStrings(ss []string) []string {
+	if len(ss) <= 1 {
+		return ss
+	}
+	res := make([]string, 0, len(ss))
+	for _, bit := range ss {
 		bit = strings.TrimSpace(bit)
 		if bit != "" {
 			res = append(res, bit)

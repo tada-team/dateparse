@@ -20,26 +20,30 @@ func dateTimeParse(s string, opts Opts) (t time.Time, msg string) {
 			date = date.Add(24 * time.Hour)
 		}
 
-		s = strings.Replace(s, strings.TrimSpace(replacingTime), "", 1)
 		hour := timeP.Hour()
 		minute := timeP.Minute()
 		second := timeP.Second()
+
+		replacingTime = strings.TrimSpace(replacingTime)
 		if len(replacingTime) == 0 {
 			hour = date.Hour()
 			minute = date.Minute()
 			second = date.Second()
 		}
-		return getDate(date.Year(), int(date.Month()), date.Day(), hour, minute, second, opts), strings.TrimSpace(s)
+
+		s = strings.Replace(s, replacingTime, "", 1)
+		return getDate(date.Year(), date.Month(), date.Day(), hour, minute, second, opts), strings.TrimSpace(s)
 	}
 	return
 }
 
 func joinRegexp(regexps []*regexp.Regexp, sep string) (*regexp.Regexp, error) {
-	var result string
-	var newSep string
-	for _, re := range regexps {
-		result += newSep + re.String()
-		newSep = sep
+	var b strings.Builder
+	for i, re := range regexps {
+		if i > 0 {
+			b.WriteString(sep)
+		}
+		b.WriteString(re.String())
 	}
-	return regexp.Compile(result)
+	return regexp.Compile(b.String())
 }

@@ -12,7 +12,7 @@ type Opts struct {
 
 func Parse(s string, opts *Opts) (time.Time, string) {
 	if opts == nil {
-		opts = &Opts{}
+		opts = new(Opts)
 	}
 	if opts.TodayEndHour == 0 {
 		opts.TodayEndHour = 18
