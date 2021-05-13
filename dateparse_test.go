@@ -561,6 +561,10 @@ func TestDateparse(t *testing.T) {
 			dt.Add(1 * time.Minute),
 			"",
 		},
+		"через минуту [username](http://ya.ru)": {
+			dt.Add(1 * time.Minute),
+			"[username](http://ya.ru)",
+		},
 		"через 2 минуты": {
 			dt.Add(2 * time.Minute),
 			"",
