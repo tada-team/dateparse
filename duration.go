@@ -1,7 +1,6 @@
 package dateparse
 
 import (
-	"fmt"
 	"strings"
 	"time"
 )
@@ -86,8 +85,6 @@ func durationParse(bits []string, opts Opts) (dur time.Duration) {
 	if strings.Contains(durPrefix, bits[0]) {
 		return durationParse(normalizeStrings(bits[1:]), opts)
 	}
-
-	fmt.Println(bits)
 
 	switch len(bits) {
 	case 1:
