@@ -627,18 +627,19 @@ func TestDateparse(t *testing.T) {
 		//	"",
 		//},
 	} {
-		got, msg := Parse(k, &Opts{Now: dt})
-		if got.IsZero() || !got.Equal(want.date) || msg != want.message {
-			t.Errorf("dateparse error on '%s': got '%s' (comment: '%s') want '%s' (comment: '%s')", k, got, msg, want.date, want.message)
-			continue
-		}
+		t.Run(k, func(t *testing.T) {
+			got, msg := Parse(k, &Opts{Now: dt})
+			if got.IsZero() || !got.Equal(want.date) || msg != want.message {
+				t.Errorf("dateparse error on '%s': got '%s' (comment: '%s') want '%s' (comment: '%s')", k, got, msg, want.date, want.message)
+			}
+		})
 	}
 }
 
 // BenchmarkParse-12    	   15781	     76097 ns/op	     494 B/op	      14 allocs/op
 // ==>
 // BenchmarkParse-12    	   16088	     75671 ns/op	     439 B/op	       8 allocs/op
-func BenchmarkParse(b *testing.B ) {
+func BenchmarkParse(b *testing.B) {
 	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
 		Parse("сегодня в 18", nil)
