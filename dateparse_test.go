@@ -597,6 +597,18 @@ func TestDateparse(t *testing.T) {
 			dt.Add(time.Minute * 3),
 			"тест",
 		},
+		"через пол часа тест": {
+			dt.Add(time.Minute * 30),
+			"тест",
+		},
+		"через четверть минуты тест": {
+			dt.Add(time.Second * 15),
+			"тест",
+		},
+		"через полчаса тест": {
+			dt.Add(time.Minute * 30),
+			"тест",
+		},
 		// FIXME:
 		//"в субботу в 11 утра": {
 		//	time.Date(dt.Year(), dt.Month(), dt.Day()+7, 11, 0, 0, 0, dt.Location()),
