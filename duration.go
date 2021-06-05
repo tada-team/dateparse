@@ -7,7 +7,7 @@ import (
 
 var (
 	seconds           = `сек|секунд|sec|seconds`
-	minutes           = `мин|минут|минуту|min `
+	minutes           = `мин|минут|минуту|минуты|min`
 	hours             = `часов|hours|hour|часа|час`
 	days              = `дней|дня|days`
 	weeksWords        = `недель|неделю|недели|неделя|weeks|week`
