@@ -7,7 +7,7 @@ import (
 
 var (
 	seconds           = `сек|секунд|sec|seconds`
-	minutes           = `мин|минут|минуту|min `
+	minutes           = `мин|минут|минуту|минуты|min`
 	hours             = `часов|hours|hour|часа|час`
 	days              = `дней|дня|days`
 	weeksWords        = `недель|неделю|недели|неделя|weeks|week`
@@ -25,6 +25,8 @@ var (
 )
 
 var (
+	quarter     = `quarter|четверть`
+	half        = `half|пол`
 	one         = `one|один`
 	two         = `two|два`
 	three       = `three|три`
@@ -35,14 +37,18 @@ var (
 	eight       = `eight|восемь`
 	nine        = `nine|девять`
 	ten         = `ten|десять`
-	wordNumbers = strings.Join([]string{one, two, three, four, five, six, seven, eight, nine, ten}, "|")
+	wordNumbers = strings.Join([]string{quarter, half, one, two, three, four, five, six, seven, eight, nine, ten}, "|")
 )
 
-func checkWordNumber(s string) int64 {
-	if v := forceInt64(s); v != 0 {
+func checkWordNumber(s string) float64 {
+	if v := forceFloat64(s); v != 0 {
 		return v
 	}
 	switch {
+	case strings.Contains(quarter, s):
+		return 0.25
+	case strings.Contains(half, s):
+		return 0.5
 	case strings.Contains(one, s):
 		return 1
 	case strings.Contains(two, s):
@@ -96,6 +102,28 @@ func durationParse(bits []string, opts Opts) (dur time.Duration) {
 			return
 		}
 		word := strings.TrimSpace(bits[1])
+		if v < 1 && v >= 0 {
+			div := time.Duration(1 / v)
+			switch {
+			case strings.Contains(seconds, word):
+				return time.Second / div
+			case strings.Contains(minutes, word):
+				return time.Minute / div
+			case strings.Contains(hours, word):
+				return time.Hour / div
+			case strings.Contains(days, word):
+				return time.Hour * 12
+			case strings.Contains(weeksWords, word):
+				return time.Hour * 12 * 7
+			case strings.Contains(monthsWords, word):
+				return time.Hour * 12 * 31 // XXX:
+			case strings.Contains(years, word):
+				return time.Hour * 12 * 365 // XXX:
+			default:
+				return durationParse(bits[:1], opts)
+			}
+		}
+
 		switch {
 		case strings.Contains(seconds, word):
 			return time.Duration(v) * time.Second
@@ -113,7 +141,6 @@ func durationParse(bits []string, opts Opts) (dur time.Duration) {
 			return time.Duration(v) * time.Hour * 24 * 365 // XXX:
 		default:
 			return durationParse(bits[:1], opts)
-
 		}
 	}
 	return

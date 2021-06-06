@@ -20,6 +20,19 @@ func forceInt64(s string) int64 {
 	return val
 }
 
+func forceFloat64(s string) float64 {
+	s = strings.TrimSpace(s)
+	s = strings.TrimLeft(s, "0")
+	if s == "" {
+		return 0
+	}
+	val, err := strconv.ParseFloat(s, 64)
+	if err != nil {
+		return 0
+	}
+	return val
+}
+
 func normalizeStrings(ss []string) []string {
 	if len(ss) <= 1 {
 		return ss
